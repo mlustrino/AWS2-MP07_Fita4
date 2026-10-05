@@ -7,27 +7,14 @@ error_reporting(E_ALL);
 
 session_start();
 
-
-if (isset($_GET['tecla'])){
-    $tecla = $_GET['tecla'];
-    
-    if ($tecla =="BS"){
-
-        $_SESSION['texto'] = substr($_SESSION['texto'],0,-1);
-    }elseif($tecla=="LF"){
-        $_SESSION['texto'] = $_SESSION['texto']. "\n";
-    }elseif($tecla=="SPACE"){
-
-        $_SESSION['texto'] = $_SESSION['texto']. " ";
-    }elseif($tecla=="CLEAN"){
-        $_SESSION['texto'] = "";
-    
-    }else{
-
-    $_SESSION['texto'] = $_SESSION['texto']. $tecla;
+if (!isset($_SESSION["texto"])) {
+    $_SESSION["texto"] = "";
+}
+if (isset($_POST['notes'])){
+    $notes = trim($_POST['notes']);
+    if ($notes !== ""){
+        $_SESSION["texto"] .= $notes . "\n\n";
     }
-}else{
-    $_SESSION['texto'] ="";
 }
   ?>
 
@@ -37,33 +24,15 @@ if (isset($_GET['tecla'])){
     padding: 5px;
     text-align: center;}</style>
 
+    <h1>Escriu les teves notes</h1>
 
+        <form action="ex44pagina1.php" method="post">
+            <textarea name="notes" rows="10" cols="50"></textarea>
+            <input type="submit" name="Enviar" value="Enviar">
+        </form>
 
-        <p><textarea name="textarea" rows="10" cols="50"><?php echo $_SESSION['texto']; ?></textarea></p>
-
-        <?php
-        $boto = '<td%s><button type="button" onclick="document.location.href=\'?tecla=%s\';" >%s</button></td>';
-
-        //echo '<table><tr><th colspan="8">TECLADO</th>'.printf($boto,"","BS","BS").'</tr>';
-        echo '<table><tr><th colspan="8">TECLADO</th><td><button type="button" onclick="document.location.href=\'?tecla=BS\';" >BS</button></td></tr>';
-
-
-        for($i=0;$i<=25;$i++){
-            if ($i==0){
-                echo "<tr>";
-            }
-            
-            if (($i % 9) ==0 ){echo "</tr><tr>";}
-            printf($boto,"",chr($i+65),chr($i+65));
-            if ($i==25){
-                printf($boto,"","LF","LF");
-                echo '</tr>';
-
-                printf($boto,' colspan="7"',"SPACE","SPACE");
-                printf($boto,' colspan="2"',"CLEAN","CLEAN");
-                
-            }
-
-        }
+        <h2>Notes guardades</h2>
+        <p><?php echo nl2br($_SESSION["texto"]); ?></p>
+<?php 
         echo '</table>';
 
